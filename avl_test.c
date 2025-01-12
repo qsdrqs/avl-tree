@@ -108,8 +108,13 @@ int main(int argc, char **argv)
 {
 	if (argc != 2) {
 		printf("Usage: %s <test_number>\n", argv[0]);
+		exit(1);
 	}
 	int number = atoi(argv[1]);
+	if (number < 1 || number > 12) {
+		printf("invalid test number: %d, should be 1-12\n", number);
+		exit(1);
+	}
 	all_tests(number);
 
 	if (mu_fails) {
@@ -419,7 +424,7 @@ int unit_test_atomic_insertion()
 		"PH",
 		"PX",
 
-		/* height unchanged
+		/* height unchanged */
 		"PHX",
 		"PXH",
 
@@ -428,7 +433,7 @@ int unit_test_atomic_insertion()
 		/* P.left is left-heavy */
 
 		/* H.height = 0 + 2 */
-		"PHD"
+		"PHD",
 
 		/* H.height = 1 + 2 */
 		"PHXDLB",
