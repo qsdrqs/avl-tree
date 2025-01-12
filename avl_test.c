@@ -48,35 +48,69 @@ static int unit_test_dup();
 static int unit_test_min();
 #endif
 
-void all_tests()
+void all_tests(int number)
 {
-	mu_test("unit_test_create", unit_test_create());
+	switch (number) {
+	case 1:
+		mu_test("unit_test_create", unit_test_create());
+		break;
 
-	mu_test("unit_test_find", unit_test_find());
+	case 2:
+		mu_test("unit_test_find", unit_test_find());
+		break;
 
-	mu_test("unit_test_successor", unit_test_successor());
+	case 3:
+		mu_test("unit_test_successor", unit_test_successor());
+		break;
 
-	mu_test("unit_test_atomic_insertion", unit_test_atomic_insertion());
-	mu_test("unit_test_atomic_deletion", unit_test_atomic_deletion());
+	case 4:
+		mu_test("unit_test_atomic_insertion", unit_test_atomic_insertion());
+		break;
+	case 5:
+		mu_test("unit_test_atomic_deletion", unit_test_atomic_deletion());
+		break;
 
-	mu_test("unit_test_chain_insertion", unit_test_chain_insertion());
-	mu_test("unit_test_chain_deletion", unit_test_chain_deletion());
+	case 6:
+		mu_test("unit_test_chain_insertion", unit_test_chain_insertion());
+		break;
+	case 7:
+		mu_test("unit_test_chain_deletion", unit_test_chain_deletion());
+		break;
 
-	mu_test("unit_test_permutation_insertion", unit_test_permutation_insertion());
-	mu_test("unit_test_permutation_deletion", unit_test_permutation_deletion());
+	case 8:
+		mu_test("unit_test_permutation_insertion", unit_test_permutation_insertion());
+		break;
+	case 9:
+		mu_test("unit_test_permutation_deletion", unit_test_permutation_deletion());
+		break;
 
-	mu_test("unit_test_random_insertion_deletion", unit_test_random_insertion_deletion());
+	case 10:
+		mu_test("unit_test_random_insertion_deletion", unit_test_random_insertion_deletion());
+		break;
 
-	mu_test("unit_test_dup", unit_test_dup());
+	case 11:
+		mu_test("unit_test_dup", unit_test_dup());
+		break;
 
 	#ifdef AVL_MIN
-	mu_test("unit_test_min", unit_test_min());
+	case 12:
+		mu_test("unit_test_min", unit_test_min());
+		break;
 	#endif
+
+	default:
+		printf("invalid test number\n");
+		exit(1);
+	}
 }
 
 int main(int argc, char **argv)
 {
-	all_tests();
+	if (argc != 2) {
+		printf("Usage: %s <test_number>\n", argv[0]);
+	}
+	int number = atoi(argv[1]);
+	all_tests(number);
 
 	if (mu_fails) {
 		printf("*** %d/%d TESTS FAILED ***\n", mu_fails, mu_tests);
@@ -135,7 +169,7 @@ avlnode *tree_insert(avltree *avlt, int key)
 		fprintf(stdout, "tree_insert: invalid key %d\n", key);
 		return NULL;
 	}
-	
+
 	if ((data = makedata(key)) == NULL || (node = avl_insert(avlt, data)) == NULL) {
 		fprintf(stdout, "tree_insert: insert %d failed\n", key);
 		free(data);
@@ -192,7 +226,7 @@ void permutation_insert(char *a)
 	avltree *avlt;
 	avlnode *node;
 	int i;
-	
+
 	if ((avlt = tree_create()) == NULL) {
 		fprintf(stdout, "create AVL tree failed\n");
 		permutation_error++;
@@ -215,7 +249,7 @@ void permutation_delete(char *a)
 	avltree *avlt;
 	avlnode *node;
 	int i;
-	
+
 	if ((avlt = tree_create()) == NULL) {
 		fprintf(stdout, "create AVL tree failed\n");
 		permutation_error++;
@@ -277,7 +311,7 @@ int unit_test_find()
 {
 	avltree *avlt;
 	avlnode *r, *e, *d, *s, *o, *x, *c, *u, *b, *t;
-	
+
 	if ((avlt = tree_create()) == NULL) {
 		fprintf(stdout, "create AVL tree failed\n");
 		goto err0;
@@ -325,7 +359,7 @@ int unit_test_successor()
 {
 	avltree *avlt;
 	avlnode *r, *e, *d, *s, *o, *x, *c, *u, *b, *t;
-	
+
 	if ((avlt = tree_create()) == NULL) {
 		fprintf(stdout, "create AVL tree failed\n");
 		goto err0;
@@ -379,7 +413,7 @@ int unit_test_atomic_insertion()
 	/* we could make a full tree by inserting A-Z and a-e */
 
 	/* balanced */
-		
+
 		/* height insreased */
 		"P",
 		"PH",
@@ -412,7 +446,7 @@ int unit_test_atomic_insertion()
 	/* arrangements required: insertion under P.right */
 
 		/* P.right is right-heavy */
-		
+
 		/* X.height = 0 + 2 */
 		"PXb",
 
@@ -450,7 +484,7 @@ int unit_test_atomic_insertion()
 
 		avl_destroy(avlt);
 	}
-	
+
 	return 1;
 
 err:
@@ -471,7 +505,7 @@ int unit_test_atomic_deletion()
 	/* balanced */
 
 		/* height decreased */
-		"P", "P", 
+		"P", "P",
 		"PH", "H",
 		"PH", "P",
 		"PX", "P",
@@ -490,9 +524,9 @@ int unit_test_atomic_deletion()
 		"PHXD", "X",
 
 		/* H.height = 1 + 2 */
-		"PHXDLTBF", "X", 
+		"PHXDLTBF", "X",
 		"PHXDLTB", "X",
-		"PHXDLTF", "X",		
+		"PHXDLTF", "X",
 
 		/* P.left is balanced */
 
@@ -523,7 +557,7 @@ int unit_test_atomic_deletion()
 	/* arrangements required: deletion under P.left */
 
 		/* P.right is right-heavy */  /* height decreased */
-		
+
 		/* X.height = 0 + 2 */
 		"PHXb", "H",
 
@@ -533,7 +567,7 @@ int unit_test_atomic_deletion()
 		"PHXDTbd", "H",
 
 		/* P.right is balanced */
-		
+
 		/* X.height = 0 + 2 */
 		"PHXTb", "H",
 
@@ -585,7 +619,7 @@ int unit_test_atomic_deletion()
 
 		avl_destroy(avlt);
 	}
-	
+
 	return 1;
 
 err:
@@ -623,7 +657,7 @@ int unit_test_chain_insertion()
 		"PHXTbd",
 		0
 	};
-	
+
 	for (i = 0; i < sizeof(cases) / sizeof(cases[0]) && cases[i] != 0; i++) {
 		if ((avlt = tree_create()) == NULL) {
 			fprintf(stdout, "%s - create AVL tree failed\n", cases[i]);
@@ -701,7 +735,7 @@ err0:
 int unit_test_permutation_insertion()
 {
 	char a[] = CHARS;
-	
+
 	permutation_error = 0;
 	permute(a, 0, strlen(a) - 1, permutation_insert);
 	return (permutation_error == 0);
@@ -710,7 +744,7 @@ int unit_test_permutation_insertion()
 int unit_test_permutation_deletion()
 {
 	char a[] = CHARS;
-	
+
 	permutation_error = 0;
 	permute(a, 0, strlen(a) - 1, permutation_delete);
 	return (permutation_error == 0);
@@ -721,12 +755,12 @@ int unit_test_random_insertion_deletion()
 	avltree *avlt;
 	int ninsert, ndelete;
 	int i, key, max;
-	
+
 	if ((avlt = tree_create()) == NULL) {
 		fprintf(stdout, "create AVL tree failed\n");
 		goto err0;
 	}
-	
+
 	ninsert = 0;
 	ndelete = 0;
 	max = 9999;
